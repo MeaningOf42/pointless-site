@@ -1,15 +1,6 @@
 from PIL import Image, ImageDraw
 import webcolors
 
-css_template = """
-div.kitten {{
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  {}
-}}
-"""
-
 class Point:
     def __init__(self, x, y, color):
         self.x = x
@@ -43,6 +34,18 @@ def rgb_to_css_color(rgb):
     except ValueError:
         return "rgb"+str(rgb)
 
+scale = 4
+css_template = """
+div.kitten {{
+  width: {}px;
+  height: {}px;
+  border-radius: 50%;
+  {}
+}}
+"""
+
+
+
 kitten = Image.open("css_dithering/create_css/kitten.jpeg")
 kitten.show()
 imageSize = kitten.size
@@ -50,6 +53,7 @@ imageSize = kitten.size
 outImage = Image.new('RGB', imageSize, (255, 255, 255))
 outPixels = outImage.load()
 
+points = []
 numColors = 4
 colorFactor = numColors-1
 for x in range(imageSize[0]):
@@ -57,13 +61,12 @@ for x in range(imageSize[0]):
         inPixel = kitten.getpixel((x,y))
         outPixel = tuple(map(lambda x: int(round(x*colorFactor/255)*255/colorFactor), inPixel))
         outPixels[x,y] = outPixel
-        print(rgb_to_css_color(outPixel))
+        points.append(Point(x*scale, y*scale, rgb_to_css_color(outPixel)))
 
 outImage.show()
 
-points = [Point(0,0,"black"), Point(0,10,"red"), Point(10,0,"blue")]
-css = css_template.format(pointsToCSS(points))
+css = css_template.format(scale, scale, pointsToCSS(points))
 
-print(css)
+#print(css)
 with open("css_dithering/kitten.css", 'w') as css_file:
     css_file.write(css)
