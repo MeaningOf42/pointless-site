@@ -41,6 +41,15 @@ kitten.show()
 imageSize = kitten.size
 
 outImage = Image.new('RGB', imageSize, (255, 255, 255))
+outPixels = outImage.load()
+
+numColors = 4
+colorFactor = numColors-1
+for x in range(imageSize[0]):
+    for y in range(imageSize[1]):
+        inPixel = kitten.getpixel((x,y))
+        outPixel = tuple(map(lambda x: int(round(x*colorFactor/255)*255/colorFactor), inPixel))
+        outPixels[x,y] = outPixel
 outImage.show()
 
 points = [Point(0,0,"black"), Point(0,10,"red"), Point(10,0,"blue")]
