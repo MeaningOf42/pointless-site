@@ -36,12 +36,12 @@ def pointsToCSS(points):
     out = out[:-6]+";"
     return out
 
-kitten = Image.open("css_dithering/create_css/kitten.jpg")
+kitten = Image.open("css_dithering/create_css/kitten.jpeg")
 kitten.show()
 
 points = [Point(0,0,"black"), Point(0,10,"red"), Point(10,0,"blue")]
 css = css_template.format(pointsToCSS(points))
 
 print(css)
-with open("css-dithering/kitten.css", 'w') as css_file:
+with open("css_dithering/kitten.css", 'w') as css_file:
     css_file.write(css)
