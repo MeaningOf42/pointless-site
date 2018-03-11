@@ -38,6 +38,10 @@ def pointsToCSS(points):
 
 kitten = Image.open("css_dithering/create_css/kitten.jpeg")
 kitten.show()
+imageSize = kitten.size
+
+outImage = Image.new('RGB', imageSize, (255, 255, 255))
+outImage.show()
 
 points = [Point(0,0,"black"), Point(0,10,"red"), Point(10,0,"blue")]
 css = css_template.format(pointsToCSS(points))
