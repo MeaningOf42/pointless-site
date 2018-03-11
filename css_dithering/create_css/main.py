@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw
+import webcolors
 
 css_template = """
 div.kitten {{
@@ -36,6 +37,12 @@ def pointsToCSS(points):
     out = out[:-6]+";"
     return out
 
+def rgb_to_css_color(rgb):
+    try:
+        return webcolors.rgb_to_name(rgb)
+    except ValueError:
+        return "rgb"+str(rgb)
+
 kitten = Image.open("css_dithering/create_css/kitten.jpeg")
 kitten.show()
 imageSize = kitten.size
@@ -50,6 +57,8 @@ for x in range(imageSize[0]):
         inPixel = kitten.getpixel((x,y))
         outPixel = tuple(map(lambda x: int(round(x*colorFactor/255)*255/colorFactor), inPixel))
         outPixels[x,y] = outPixel
+        print(rgb_to_css_color(outPixel))
+
 outImage.show()
 
 points = [Point(0,0,"black"), Point(0,10,"red"), Point(10,0,"blue")]
