@@ -52,19 +52,32 @@ imageSize = kitten.size
 
 outImage = Image.new('RGB', imageSize, (255, 255, 255))
 outPixels = outImage.load()
+inPixels = kitten.load()
 
 points = []
 numColors = 4
 colorFactor = numColors-1
-for x in range(imageSize[0]):
-    for y in range(imageSize[1]):
+for y in range(imageSize[1]):
+    for x in range(imageSize[0]):
         inPixel = kitten.getpixel((x,y))
         outPixel = tuple(map(lambda x: int(round(x*colorFactor/255)*255/colorFactor), inPixel))
+        pixelError = tuple(map(lambda a, b: a-b, inPixel, outPixel))
+
+        for offset in [(1,0,7/16), (-1,1,3/16), (0,1,5/16), (1,1,1/16)]:
+            moveErrorToX = x+offset[0]
+            moveErrorToY = y+offset[1]
+            if moveErrorToX > 0 and moveErrorToX < imageSize[0] \
+            and moveErrorToY > 0 and moveErrorToY < imageSize[1]:
+                oldPixel = kitten.getpixel((moveErrorToX, moveErrorToY))
+                newPixel = tuple(map(lambda a, b: a + int(b * offset[2]), oldPixel, pixelError))
+                inPixels[moveErrorToX, moveErrorToY] = newPixel
+
         outPixels[x,y] = outPixel
         points.append(Point(x*scale, y*scale, rgb_to_css_color(outPixel)))
 
 outImage.show()
 
+points = list(filter(lambda a: a.color != "white", points))
 css = css_template.format(scale, scale, pointsToCSS(points))
 
 #print(css)
